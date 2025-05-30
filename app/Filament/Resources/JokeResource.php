@@ -16,49 +16,42 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class JokeResource extends Resource
 {
     protected static ?string $model = Joke::class;
+    protected static ?string $navigationIcon = 'heroicon-o-face-smile';
+    protected static ?string $navigationLabel = 'Joki';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    public static function form(Form $form): Form
+    public static function form(Forms\Form $form): Forms\Form
     {
-        return $form
-            ->schema([
-                //
-            ]);
+        return $form->schema([
+            Forms\Components\TextInput::make('type')->required()->maxLength(50),
+            Forms\Components\Textarea::make('setup')->required(),
+            Forms\Components\Textarea::make('punchline')->required(),
+        ]);
     }
 
-    public static function table(Table $table): Table
+    public static function table(Tables\Table $table): Tables\Table
     {
-        return $table
-            ->columns([
-                //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        return $table->columns([
+            Tables\Columns\TextColumn::make('type')->sortable(),
+            Tables\Columns\TextColumn::make('setup')->limit(50),
+            Tables\Columns\TextColumn::make('punchline')->limit(50),
+            Tables\Columns\TextColumn::make('created_at')->dateTime(),
+        ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
+      public static function getPages(): array
     {
         return [
             'index' => Pages\ListJokes::route('/'),
             'create' => Pages\CreateJoke::route('/create'),
             'edit' => Pages\EditJoke::route('/{record}/edit'),
+        ];
+    }
+
+
+    public static function getRelations(): array
+    {
+        return [
+            //
         ];
     }
 }
